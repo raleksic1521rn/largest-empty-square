@@ -5,10 +5,6 @@ import numpy as np
 from matplotlib.patches import Rectangle
 from helper import MergeSortTree
 
-max_iterations = 32
-liml = -100.0 
-limr = 200.0
-
 def draw_square(x, y, r):
     square = Rectangle((x - r/2, y - r/2), r, r, fill=False, edgecolor='black')
     plt.gca().add_patch(square)
@@ -20,6 +16,9 @@ def draw_point(point):
     plt.draw()
 
 def main():
+    max_iterations = 32
+    liml = -100.0 
+    limr = 200.0
     points = []
     fpath = input("Enter file path or leave empty for randomized input: ")
     if (fpath):
@@ -27,6 +26,10 @@ def main():
             for line in file:
                 x, y = map(float, line.strip().split())
                 points.append((x, y))
+                limr = max(limr, x)
+                limr = max(limr, y)
+                liml = min(liml, x)
+                liml = min(liml, y)
         points = sorted(points)
     else:
         points = sorted([(np.random.uniform(liml * 0.75, limr * 0.75), np.random.uniform(liml * 0.66, limr * 0.66)) for _ in range(100)])
@@ -61,7 +64,7 @@ def main():
         plt.pause(0.1)
         square = None
         l = 0.0 
-        r = limr - liml
+        r = 2 * (limr - liml)
         res = l
         for _ in range(max_iterations):
             d = (l + r) / 2
